@@ -1,4 +1,7 @@
-from numpy.distutils.misc_util import default_text
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from PySimpleGUI.PySimpleGUI import Column
+
 def Inicio(sg):
     
     inicio = [[sg.Frame('Inicio', layout=[
@@ -16,21 +19,23 @@ def Configuracion(sg, listaPalabras, diccionario):
     [sg.InputText(key='palabra'), sg.ReadButton('Cargar', key='cargar')],
     [sg.Listbox(values=listaPalabras, size= (15,3), key='lista'), sg.ReadButton('Modificar', key='modificar'), sg.ReadButton('Eliminar', key='eliminar')]]), sg.Frame('Seleccione el formato de la grilla:', layout = [
             [sg.Listbox(values=(['Arial','Helvetica', 'Courier', 'Verdana', 'Comic']), enable_events=True, key='fonts', size = (20,5))]])],
-    [sg.Frame('Orientacion de las palabras', layout=[
+    [sg.Frame('Orientación de las palabras', layout=[
         [sg.Radio(group_id = 0, text='Horizontal', key='horizontal', default = diccionario['orientacion'] =='horizontal' )],
         [sg.Radio(group_id = 0, text='Vertical', key='vertical',default = diccionario['orientacion']=='vertical')]]),sg.Frame('Formato', layout=[
-        [sg.Radio(group_id = 1, text='Minusculas', key='minusculas', default =  diccionario['minusculas'])],
-        [sg.Radio(group_id = 1, text='Mayusculas', key='mayusculas', default = not diccionario['minusculas'])]]), sg.Txt('Oficina Numero: '), sg.InputText(default_text = diccionario['oficina'], key='oficinaEligida')],
-        [sg.Frame('Seleccione si desea brindarle ayuda al jugador:', layout=[[sg.Listbox(values=['palabras', 'definiciones'], key='listaAyuda', size=(11,2))], [sg.Radio(group_id=2, text='Si', key='si', default = diccionario['ayuda']['activa'])], [sg.Radio(group_id =2, text='No', key='no', default = not diccionario['ayuda']['activa'])]])],
+        [sg.Radio(group_id = 1, text='Minúsculas', key='minusculas', default =  diccionario['minusculas'])],
+        [sg.Radio(group_id = 1, text='Mayúsculas', key='mayusculas', default = not diccionario['minusculas'])]]), sg.Frame('Look and feel', layout= [
+                                                                                                                                                    
+                                                                                                                                                    [sg.Txt('Oficina Número: '), sg.InputText(default_text = diccionario['oficina'], size=(10,2), key='oficinaEligida')]])],
+        [sg.Frame('Seleccione el tipo de ayuda que desea brindarle al jugador:', layout=[[sg.Listbox(values=['Sin ayuda', 'Palabras', 'Definiciones'], default_values=('Sin ayuda'), key='listaAyuda', size=(11,3))]])],
         [sg.ReadButton('Guardar', key='guardar'), sg.ReadButton('Volver', key='volver')]]
     
     return configuracion
     
 
 def Jugar(sg, diccionario):
-    canS = 'La cantidad maxima de sustantivos posibles es:'+ str(len(list(diccionario['NN'].keys())))
-    canA = 'La cantidad maxima de adjetivos posibles es:'+ str(len(list(diccionario['JJ'].keys())))
-    canV = 'La cantidad maxima de verbos posibles es:'+ str(len(list(diccionario['VB'].keys())))
+    canS = 'La cantidad máxima de sustantivos posibles es:'+ str(len(list(diccionario['NN'].keys())))
+    canA = 'La cantidad máxima de adjetivos posibles es:'+ str(len(list(diccionario['JJ'].keys())))
+    canV = 'La cantidad máxima de verbos posibles es:'+ str(len(list(diccionario['VB'].keys())))
     wjugar = [[sg.Text('Sopa de letras'), sg.Text('', key='_OUTPUT_')],
               [sg.Frame('Defina los colores', layout= [
         [sg.Txt('Sustantivos'), sg.ColorChooserButton('Seleccionar', target=(0,2), key='ColorSustantivos'), sg.InputText('#ffff80', key='auxSustantivos', visible=False)],
@@ -44,10 +49,12 @@ def Jugar(sg, diccionario):
     
     return wjugar
 
-def Jugando (sg, cantFilas, mayor, diccionario, conf, ayuda, tuplaTamanio):
-    
-    windowJugando = [[sg.Text('Primero debes seleccionar el color de la palabra que vas a marcar')],
+def Jugando (sg, conf, tuplaTamanio, conflictos, colorInterfaz):
+    columna = [[sg.Text('Conflictos en el ingreso de palabras:')],
+                [sg.Listbox(values=conflictos, size= (30,5))], 
+                [sg.ReadButton('Verificar',key='verificar'), sg.ReadButton('Ayuda', key='ayuda')]]
+    windowJugando = [[sg.Text('Primero debés seleccionar el color del tipo de palabra que vas a marcar')],
               [sg.Text('Verbos'), sg.Text('', enable_events=True, click_submits=True, size=(5,1), background_color = conf['VB']['color'], key='VB'), sg.Text('Sustantivos'), sg.Text('', enable_events=True, size=(5,1), background_color = conf['NN']['color'], key='NN'),sg.Text('Adjetivos'), sg.Text('', enable_events=True, size=(5,1), key='JJ', background_color = conf['JJ']['color'])],
-              [sg.Graph((tuplaTamanio), (0,tuplaTamanio[1]), (tuplaTamanio[0],0), key='_GRAPH_', change_submits=True, drag_submits=False, background_color='white'), sg.ReadButton('Verificar',key='verificar'), sg.ReadButton('Ayuda', key='ayuda') ],
+              [sg.Graph((tuplaTamanio), (0,tuplaTamanio[1]), (tuplaTamanio[0],0), key='_GRAPH_', change_submits=True, drag_submits=False, background_color='white'), Column(columna, background_color=colorInterfaz)],
               [sg.ReadButton('Salir', key='out')]]
     return windowJugando

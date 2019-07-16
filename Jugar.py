@@ -2,13 +2,11 @@
 # -*- coding: utf-8 -*-
 import PySimpleGUI as sg
 from TrabajoFinal import Layouts
-import random, sys, string, json
-from pattern.es import conjugate, attributive, parse, split, INFINITIVE, NEUTRAL
+from TrabajoFinal.Configuracion import clasificarPalabra
+import random, sys, string, json 
+
 
 BOX_SIZE = 25
-def clasificarPalabra(palabra):
-    """Clasifica la palabra según sea verbo/sustantivo/adjetivo/etc."""
-    return parse(palabra).split('/')[1][0:2]
 
 def DefinirRango(clave, diccionario, configUsuario):
     """Verifica la cantidad de palabras a encontrar ingresada por el usuario y verifica que no supere el maximo.
@@ -223,7 +221,7 @@ def __init__(diccionario):
                 windowJugar.Hide()
                 break
             elif eventos == 'jugando':
-                ayudaActiva = diccionario['ayuda']['activa']
+                ayudaActiva = (diccionario['ayuda']['tipo'] != 'Sin ayuda')
                 tipoAyuda = diccionario['ayuda']['tipo']
                 palabras = list(diccionario['clases']['VB'].keys()) + list(diccionario['clases']['JJ'].keys()) + list(diccionario['clases']['NN'].keys())
                     
@@ -238,7 +236,10 @@ def __init__(diccionario):
                         sg.Popup('Debe existir al menos una palabra para buscar en la sopa de letras.')
                     else:
                         colorInterfaz = definirColor(diccionario['oficina'])
-                        windowJugando = sg.Window('Sopa de letras', background_color=colorInterfaz, size=(tuplaTamanio[0] + 330, tuplaTamanio[1] + 100),).Layout(Layouts.Jugando(sg, cantidadDeFilas, palabraMasLarga,  diccionario['clases'], configUsuario, ayudaActiva, tuplaTamanio)).Finalize() 
+                        reporte = open('ArchivoReporte.txt', 'r')
+                        conflictos = reporte.read()
+                        conflictos = conflictos.split('\n')
+                        windowJugando = sg.Window('Sopa de letras', background_color=colorInterfaz, size=(tuplaTamanio[0] + 330, tuplaTamanio[1] + 100),).Layout(Layouts.Jugando(sg, configUsuario, tuplaTamanio, conflictos, colorInterfaz)).Finalize() 
                         
                         g = windowJugando.FindElement('_GRAPH_')
                         coordenadas = {}
@@ -276,31 +277,31 @@ def __init__(diccionario):
                                             g.TKCanvas.itemconfig(coordenadas[tuplaClave]['casillero'], fill = g.BackgroundColor)
                                             coordenadas[tuplaClave]['color'] = g.BackgroundColor
                                 except NameError:
-                                    sg.Popup('Debes seleccionar un color.')
+                                    sg.Popup('Debés seleccionar un color.')
                                 except KeyError:
-                                    sg.Popup('Debes seleccionar dentro del rango de la sopa de letras.')
+                                    sg.Popup('Debés seleccionar casilleros dentro de la grilla de sopa de letras.')
                                             
                             elif e == 'verificar':
                                 verificarPalabras(coordenadas, dicSeleccion)
                                 palabrasFaltantes = ganarJuego(dicSeleccion)
                                 
                                 if (palabrasFaltantes == 0):
-                                    sg.Popup('Felicitaciones', 'Has completado la sopa de letras correctamente')
+                                    sg.Popup('Felicitaciones', 'Completaste la sopa de letras correctamente.')
                                     sys.exit()
                                 else:
-                                    sg.Popup('¡Casi!', 'Aun no completaste toda la sopa de letras, te faltan adivinar ' + str(palabrasFaltantes) + ' palabras')
+                                    sg.Popup('¡Casi!', 'Aún no completaste toda la sopa de letras, falta adivinar ' + str(palabrasFaltantes) + ' palabras.')
                             
                             elif e == 'ayuda':
                                 if (ayudaActiva):
-                                    if (tipoAyuda == 'definiciones'):
+                                    if (tipoAyuda == 'Definiciones'):
                                         strAyuda = '\n'.join(listaDefiniciones)
-                                        sg.Popup('Definicion de las palabras: \n' + strAyuda)
+                                        sg.Popup('Definiciones de las palabras: \n' + strAyuda)
                                     else:
                                         strAyuda = '\n'.join(palabras)
                                         sg.Popup('Palabras en la sopa de letras: \n' + strAyuda)
                                 else:
-                                    sg.Popup('La ayuda se encuentra deshabilitada.')
+                                    sg.Popup('Ayuda','Lo sentimos, la ayuda se encuentra deshabilitada... pero te damos una pista:\nDebés encontrar en total ' + str(configUsuario['NN']['cantidad']) + ' sustantivos, ' + str(configUsuario['VB']['cantidad']) + ' verbos y '+ str(configUsuario['JJ']['cantidad']) + ' adjetivos. \n¡Suerte!')
                 else:
-                    sg.Popup('No hay ninguna palabra en la sopa de letras, configurala desde el boton "Configuracion"')                
+                    sg.Popup('No hay ninguna palabra en la sopa de letras, configurala desde el boton "Configuración"')                
     except (FileNotFoundError):
-            sg.Popup('No se ha configurado la sopa de letras. Por favor, hagalo clickeando el boton "Configuracion"')
+            sg.Popup('No se ha configurado la sopa de letras. Por favor, hágalo clickeando el boton "Configuración"')

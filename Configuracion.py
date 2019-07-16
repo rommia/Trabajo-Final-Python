@@ -51,6 +51,12 @@ def GenerarReporte(texto):
     
     archivoReporte.write(texto + "\n")
     archivoReporte.close()
+
+
+def clasificarPalabra(palabra):
+    """Clasifica la palabra segun sea verbo/sustantivo/adjetivo/etc."""
+    return parse(palabra).split('/')[1][0:2]    
+
     
 def ingresarPalabra(dicPalabras, text):
     """Verifica que la palabra sea v�lida tanto en Wiktionary como en Pattern.
@@ -58,7 +64,7 @@ def ingresarPalabra(dicPalabras, text):
     Caso contrario, genera el reporte con una descripcion del error.
     Retorna verdadero o falso dependiendo si la palabra se inserto correctamente o no."""
     try:
-        clasificacion = parse(text).split('/')[1][0:2]
+        clasificacion = clasificarPalabra(text)
         
         if esPalabraValida(text):                        
                 if (clasificacion == 'VB'):      
@@ -69,14 +75,17 @@ def ingresarPalabra(dicPalabras, text):
                     articulo = Wiktionary(language='es').search(adjetivo)
                 elif (clasificacion == 'NN'):
                     articulo = Wiktionary(language='es').search(text)
+                    
                 aux = str(articulo.sections)
-                if 'ADJ' in aux.upper() and clasificacion == 'JJ':
-                    print('La palabra es un adjetivo') 
-                elif 'VERB' in aux.upper() and clasificacion == 'VB':
-                    print('La palabra es un verbo')
-                elif 'SUST' in aux.upper() and clasificacion == 'NN':
-                    print('La palabra es un sustantivo')
                 
+                if clasificacion == 'JJ' and 'ADJ' in aux.upper():
+                    clasificacion = 'JJ'
+                elif clasificacion == 'VB' and 'VERB' in aux.upper():
+                    clasificacion == 'VB'
+                elif clasificacion == 'NN' and 'SUST' in aux.upper():
+                    clasificacion == 'NN'
+                else:
+                    GenerarReporte('La definición de la palabra' + text + ' no coincide en Pattern y Wiktionary, se la clasificó como ' + clasificacion)
                 if (clasificacion != 'JJ' and clasificacion != 'NN' and clasificacion != 'VB'):
                     GenerarReporte('La palabra ' + text + ' no existe en pattern.')
                     
@@ -84,22 +93,19 @@ def ingresarPalabra(dicPalabras, text):
                 return True
         else:
             if (clasificacion == 'JJ' or clasificacion == 'NN' or clasificacion == 'VB'):
-                GenerarReporte('La palabra ' + text + ' no fue encontrada en Wiktionary pero si en pattern siendo un ' + clasificacion + '. Se ha agregado esta situacion en un reporte llamado ArchivoReporte.txt.')
-                dicPalabras[clasificacion][text] = sg.PopupGetText('Definicion: ')
+                GenerarReporte('La palabra ' + text + ' no fue encontrada en Wiktionary pero si en pattern siendo un ' + clasificacion)
+                dicPalabras[clasificacion][text] = sg.PopupGetText('Definición' 'No se ha encontrado la palabra en Wiktionary ni en Pattern. Ingrese una definición para la palabra: ')
                 return True
             else:
                 GenerarReporte('La palabra ' + text + ' no fue encontrada en Wiktionary y tampoco en pattern.')
-                sg.Popup('La palabra ingresada no es valida. Se ha agregado esta situacion en un reporte llamado ArchivoReporte.txt.')
+                sg.Popup('La palabra ingresada no es válida. Se ha agregado esta situación en un reporte llamado ArchivoReporte.txt en el directorio.')
     except:
-            GenerarReporte('La palabra ' + text + ' no es valida.')
-            sg.Popup('La palabra ingresada no es valida. Se ha agregado esta situacion en un reporte ArchivoReporte.txt.')
+            GenerarReporte('La palabra ' + text + ' no es válida.')
+            sg.Popup('La palabra ingresada no es válida. Se ha agregado esta situacion en un reporte ArchivoReporte.txt en el directorio.')
         
     
     return False
     
-def clasificarPalabra(palabra):
-    """Clasifica la palabra segun sea verbo/sustantivo/adjetivo/etc."""
-    return parse(palabra).split('/')[1][0:2]    
 
 def buscarDefinicion(palabra):
     """Recibe por parametro una palabra, busca su definicion en Wiktionary y retorna un string con dicha definicion."""    
@@ -123,7 +129,7 @@ def buscarDefinicion(palabra):
 
 def __init__(dicConfig): 
     listaPalabras = list(dicConfig['clases']['VB'].keys()) + list(dicConfig['clases']['JJ'].keys()) + list(dicConfig['clases']['NN'].keys())           
-    windowConfig = sg.Window('Configuracion').Layout(Layouts.Configuracion(sg, listaPalabras, dicConfig))
+    windowConfig = sg.Window('Configuración').Layout(Layouts.Configuracion(sg, listaPalabras, dicConfig))
         
     while True:            
         e, v = windowConfig.Read()
@@ -141,7 +147,7 @@ def __init__(dicConfig):
                     windowConfig.FindElement('lista').Update(values=listaPalabras)
                     guardarArchivo(dicConfig)
             except IndexError:
-                sg.Popup('No escribiste ninguna palabra.')
+                sg.Popup('No escribió ninguna palabra.')
         elif e == 'fonts':
             dicConfig['font'] = v['fonts'][0]
         elif e == 'modificar':
@@ -151,7 +157,7 @@ def __init__(dicConfig):
                     windowConfig.FindElement('lista').Update(values=listaPalabras)
                     guardarArchivo(dicConfig)
             except IndexError:
-                sg.Popup('Debes seleccionar una palabra.')
+                sg.Popup('Debe seleccionar una palabra.')
         elif e == 'eliminar':
             try:
                 eliminarPalabra(dicConfig['clases'], v['lista'][0])
@@ -159,21 +165,15 @@ def __init__(dicConfig):
                 windowConfig.FindElement('lista').Update(values=listaPalabras)
                 guardarArchivo(dicConfig)
             except IndexError:
-                sg.Popup('Debes seleccionar una palabra.')
+                sg.Popup('Debe seleccionar una palabra.')
         elif e == 'guardar':
             if v['horizontal']:
                 dicConfig['orientacion'] = 'horizontal'
             else:
                 dicConfig['orientacion'] = 'vertical'
-                    
-            dicConfig['ayuda']['activa'] = v['si']
-            
-            if (dicConfig['ayuda']['activa']):
-                try:
-                    dicConfig['ayuda']['tipo'] = v['listaAyuda'][0]
-                except:
-                    sg.Popup('Seleccione el tipo de ayuda que desea otorgarle al jugador.')
-                    
+                      
+            dicConfig['ayuda']['tipo'] = v['listaAyuda'][0]
+        
             dicConfig['minusculas'] = v['minusculas']
             dicConfig['oficina'] = windowConfig.FindElement('oficinaEligida').Get()
             guardarArchivo(dicConfig)

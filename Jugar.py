@@ -229,7 +229,7 @@ def __init__(diccionario):
                     cantidadDeFilas = len(palabras)*2
                     palabraMasLarga = len(max(palabras, key=len))
                     
-                    configUsuario = {'NN':{'cantidad': int(windowJugar.FindElement('cantSustantivos').Get()), 'color': windowJugar.FindElement('auxSustantivos').Get()}, 'JJ':{'cantidad': int(windowJugar.FindElement('cantAdjetivos').Get()), 'color': windowJugar.FindElement('auxAdjetivos').Get()}, 'VB':{'cantidad': int(windowJugar.FindElement('cantVerbos').Get()), 'color' : windowJugar.FindElement('auxVerbos').Get()}}
+                    configUsuario = {'NN':{'cantidad': int(val['cantSustantivos']), 'color': val['auxSustantivos']}, 'JJ':{'cantidad': int(val['cantAdjetivos']), 'color': val['auxAdjetivos']}, 'VB':{'cantidad': int(val['cantVerbos']), 'color' : val['auxVerbos']}}
                     
                     tuplaTamanio = definirTamanio(configUsuario, diccionario, palabraMasLarga)
                     

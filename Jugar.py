@@ -224,10 +224,11 @@ def __init__(diccionario):
                 ayudaActiva = (diccionario['ayuda']['tipo'] != 'Sin ayuda')
                 tipoAyuda = diccionario['ayuda']['tipo']
                 palabras = list(diccionario['clases']['VB'].keys()) + list(diccionario['clases']['JJ'].keys()) + list(diccionario['clases']['NN'].keys())
-                    
+                print(val['cantSustantivos'])    
                 if (len(palabras) != 0):
                     cantidadDeFilas = len(palabras)*2
                     palabraMasLarga = len(max(palabras, key=len))
+                    
                     configUsuario = {'NN':{'cantidad': int(windowJugar.FindElement('cantSustantivos').Get()), 'color': windowJugar.FindElement('auxSustantivos').Get()}, 'JJ':{'cantidad': int(windowJugar.FindElement('cantAdjetivos').Get()), 'color': windowJugar.FindElement('auxAdjetivos').Get()}, 'VB':{'cantidad': int(windowJugar.FindElement('cantVerbos').Get()), 'color' : windowJugar.FindElement('auxVerbos').Get()}}
                     
                     tuplaTamanio = definirTamanio(configUsuario, diccionario, palabraMasLarga)

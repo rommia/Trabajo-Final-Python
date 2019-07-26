@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import PySimpleGUI as sg
 from TrabajoFinal import Layouts
-from TrabajoFinal.Configuracion import clasificarPalabra
+from TrabajoFinal.Configuracion import clasificarPalabra, GenerarReporte
 import random, sys, string, json 
 
 
@@ -237,7 +237,11 @@ def __init__(diccionario):
                         sg.Popup('Debe existir al menos una palabra para buscar en la sopa de letras.')
                     else:
                         colorInterfaz = definirColor(diccionario['oficina'])
-                        reporte = open('ArchivoReporte.txt', 'r')
+                        try:
+                            reporte = open('ArchivoReporte.txt', 'r')
+                        except FileNotFoundError:
+                            GenerarReporte('No se han generado conflictos durante la carga.')
+                            reporte = open('ArchivoReporte.txt', 'r')
                         conflictos = reporte.read()
                         conflictos = conflictos.split('\n')
                         windowJugando = sg.Window('Sopa de letras', background_color=colorInterfaz, size=(tuplaTamanio[0] + 330, tuplaTamanio[1] + 100),).Layout(Layouts.Jugando(sg, configUsuario, tuplaTamanio, conflictos, colorInterfaz)).Finalize() 

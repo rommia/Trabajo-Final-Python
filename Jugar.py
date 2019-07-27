@@ -221,6 +221,7 @@ def __init__(diccionario):
                 windowJugar.Hide()
                 break
             elif eventos == 'jugando':
+
                 ayudaActiva = (diccionario['ayuda']['tipo'] != 'Sin ayuda')
                 tipoAyuda = diccionario['ayuda']['tipo']
                 palabras = list(diccionario['clases']['VB'].keys()) + list(diccionario['clases']['JJ'].keys()) + list(diccionario['clases']['NN'].keys())

@@ -175,5 +175,5 @@ def __init__(dicConfig):
             dicConfig['ayuda']['tipo'] = v['listaAyuda'][0]
         
             dicConfig['minusculas'] = v['minusculas']
-            dicConfig['oficina'] = windowConfig.FindElement('oficinaEligida').Get()
+            dicConfig['oficina'] = v['ofi'][0]
             guardarArchivo(dicConfig)

@@ -24,7 +24,7 @@ def Configuracion(sg, listaPalabras, diccionario):
         [sg.Radio(group_id = 1, text='Mayúsculas', key='mayusculas', default = not diccionario['minusculas'])]])],
     [sg.Frame('Seleccione el tipo de ayuda que desea brindarle al jugador:', layout=[[sg.Listbox(values=['Sin ayuda', 'Palabras', 'Definiciones'], default_values=('Sin ayuda'), key='listaAyuda', size=(11,3))]])]]
     
-    columna2 = [[sg.Frame('Look and feel', layout= [[sg.Txt('Oficina Número: '), sg.InputText(default_text = diccionario['oficina'], size=(10,2), key='oficinaEligida')]])],
+    columna2 = [[sg.Frame('Look and feel', layout= [[sg.Txt('Oficina Número: '), sg.Listbox(values=['1','2','3','4','5'], default_values=('1'), key='ofi', size=(11,3))]])],
                 [sg.Frame('Seleccione el formato de la grilla:', layout = [
             [sg.Listbox(values=(['Arial','Helvetica', 'Courier', 'Verdana', 'Comic']), enable_events=True, key='fonts', size = (20,5))]])],
                 [sg.Text('          ')],
@@ -35,20 +35,7 @@ def Configuracion(sg, listaPalabras, diccionario):
     configuracion = [[sg.Column(columna1), sg.Column(columna2)]]
     
     return configuracion
-#     configuracion = [[sg.Frame('Ingreso de datos', layout = [
-#     [sg.Txt('Ingrese las palabras a encontrar en la sopa de letras') ],
-#     [sg.InputText(key='palabra'), sg.ReadButton('Cargar', key='cargar')],
-#     [sg.Listbox(values=listaPalabras, size= (15,3), key='lista'), sg.ReadButton('Modificar', key='modificar'), sg.ReadButton('Eliminar', key='eliminar')]]), sg.Frame('Seleccione el formato de la grilla:', layout = [
-#             [sg.Listbox(values=(['Arial','Helvetica', 'Courier', 'Verdana', 'Comic']), enable_events=True, key='fonts', size = (20,5))]])],
-#     [sg.Frame('Orientación de las palabras', layout=[
-#         [sg.Radio(group_id = 0, text='Horizontal', key='horizontal', default = diccionario['orientacion'] =='horizontal' )],
-#         [sg.Radio(group_id = 0, text='Vertical', key='vertical',default = diccionario['orientacion']=='vertical')]]),sg.Frame('Formato', layout=[
-#         [sg.Radio(group_id = 1, text='Minúsculas', key='minusculas', default =  diccionario['minusculas'])],
-#         [sg.Radio(group_id = 1, text='Mayúsculas', key='mayusculas', default = not diccionario['minusculas'])]]), sg.Frame('Look and feel', layout= [
-#                                                                                                                                                     
-#                                                                                                                                                     [sg.Txt('Oficina Número: '), sg.InputText(default_text = diccionario['oficina'], size=(10,2), key='oficinaEligida')]])],
-#         [sg.Frame('Seleccione el tipo de ayuda que desea brindarle al jugador:', layout=[[sg.Listbox(values=['Sin ayuda', 'Palabras', 'Definiciones'], default_values=('Sin ayuda'), key='listaAyuda', size=(11,3))]])],
-#         [sg.ReadButton('Guardar', key='guardar'), sg.ReadButton('Volver', key='volver')]]
+
     
     
     

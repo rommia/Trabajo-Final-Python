@@ -51,7 +51,7 @@ class Sonido:
         self._canal = canal
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self._canal, GPIO.IN)
-        # Desactivo las warnings por tener más de un circuito en la GPIO
+        # Desactivo las warnings por tener mÃ¡s de un circuito en la GPIO
         GPIO.setwarnings(False)
         GPIO.add_event_detect(self._canal, GPIO.RISING)
 
@@ -67,7 +67,7 @@ def leer_temp():
 def imprimirdatos():
     tem=Temperatura()
     dict=tem.datos_sensor()
-    text=('Temperatura = {0:0.1f}°C  Humedad = {1:0.1f}%'.format(datos['temperatura'], datos['humedad']))
+    text=('Temperatura = {0:0.1f}Â°C  Humedad = {1:0.1f}%'.format(datos['temperatura'], datos['humedad']))
     matri=Matriz()
     matri.mostrar_mensaje( text, delay=1, font=3)
 

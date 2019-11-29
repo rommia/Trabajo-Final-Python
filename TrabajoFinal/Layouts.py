@@ -58,9 +58,7 @@ def Jugar(sg, diccionario):
     return wjugar
 
 def Jugando (sg, conf, tuplaTamanio, conflictos, colorInterfaz):
-    columna = [[sg.Text('Conflictos en el ingreso de palabras:')],
-                [sg.Listbox(values=conflictos, size= (30,5))], 
-                [sg.ReadButton('Verificar',key='verificar'), sg.ReadButton('Ayuda', key='ayuda')]]
+    columna = [[sg.ReadButton('Verificar',key='verificar'), sg.ReadButton('Ayuda', key='ayuda')]]
     windowJugando = [[sg.Text('Primero debés seleccionar el color del tipo de palabra que vas a marcar')],
               [sg.Text('Verbos'), sg.Text('', enable_events=True, click_submits=True, size=(5,1), background_color = conf['VB']['color'], key='VB'), sg.Text('Sustantivos'), sg.Text('', enable_events=True, size=(5,1), background_color = conf['NN']['color'], key='NN'),sg.Text('Adjetivos'), sg.Text('', enable_events=True, size=(5,1), key='JJ', background_color = conf['JJ']['color'])],
               [sg.Graph((tuplaTamanio), (0,tuplaTamanio[1]), (tuplaTamanio[0],0), key='_GRAPH_', change_submits=True, drag_submits=False, background_color='white'), sg.Column(columna, background_color=colorInterfaz)],
